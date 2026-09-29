@@ -1,0 +1,104 @@
+{
+  "version": 1,
+  "updated": "",
+  "settings": {
+    "storeName": "Dhiyo Studio",
+    "whatsapp": "9607749424",
+    "currency": "MVR",
+    "heroEyebrow": "New look. New chapter. Same heart.",
+    "heroTitle": "Timeless Abayas & More",
+    "heroSub": "Curated favourites · Beauty & lifestyle",
+    "announcement": "",
+    "ordersOpen": true
+  },
+  "products": [
+    {
+      "id": "p1",
+      "name": "Noor Abaya — Jet Black",
+      "price": 850,
+      "oldPrice": 0,
+      "isNew": true,
+      "best": true,
+      "soldOut": false,
+      "hidden": false,
+      "img": ""
+    },
+    {
+      "id": "p2",
+      "name": "Zaha Embroidered Abaya",
+      "price": 1150,
+      "oldPrice": 0,
+      "isNew": true,
+      "best": false,
+      "soldOut": false,
+      "hidden": false,
+      "img": ""
+    },
+    {
+      "id": "p3",
+      "name": "Layla Everyday Abaya",
+      "price": 690,
+      "oldPrice": 850,
+      "isNew": false,
+      "best": false,
+      "soldOut": false,
+      "hidden": false,
+      "img": ""
+    },
+    {
+      "id": "p4",
+      "name": "Amaya Silk Scarf",
+      "price": 280,
+      "oldPrice": 0,
+      "isNew": true,
+      "best": true,
+      "soldOut": false,
+      "hidden": false,
+      "img": ""
+    },
+    {
+      "id": "p5",
+      "name": "Rania Pearl Hijab Pin Set",
+      "price": 150,
+      "oldPrice": 220,
+      "isNew": false,
+      "best": false,
+      "soldOut": false,
+      "hidden": false,
+      "img": ""
+    },
+    {
+      "id": "p6",
+      "name": "Sana Everyday Tote",
+      "price": 420,
+      "oldPrice": 0,
+      "isNew": false,
+      "best": true,
+      "soldOut": false,
+      "hidden": false,
+      "img": ""
+    },
+    {
+      "id": "p7",
+      "name": "Deena Modest Set",
+      "price": 980,
+      "oldPrice": 1200,
+      "isNew": false,
+      "best": true,
+      "soldOut": false,
+      "hidden": false,
+      "img": ""
+    },
+    {
+      "id": "p8",
+      "name": "Aaliya Rose Perfume Oil",
+      "price": 190,
+      "oldPrice": 0,
+      "isNew": true,
+      "best": false,
+      "soldOut": false,
+      "hidden": false,
+      "img": ""
+    }
+  ]
+}
