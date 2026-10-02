@@ -363,7 +363,20 @@ $('login-btn').onclick = function(){
   this.disabled = true; this.textContent = 'Signing in\u2026';
   var btn = this;
   auth.signInWithEmailAndPassword(email, pass).catch(function(e){
-    err.textContent = 'Could not sign in \u2014 check your email and password.';
+    var msgs = {
+      'auth/invalid-email': 'That email address looks invalid.',
+      'auth/user-not-found': 'No account exists for that email. Add it in Firebase Console \u2192 Authentication \u2192 Users.',
+      'auth/wrong-password': 'Wrong password for that email.',
+      'auth/invalid-credential': 'Wrong email or password.',
+      'auth/invalid-login-credentials': 'Wrong email or password.',
+      'auth/user-disabled': 'This account has been disabled in Firebase Console.',
+      'auth/too-many-requests': 'Too many attempts \u2014 wait a few minutes and try again.',
+      'auth/network-request-failed': 'Network error \u2014 check your connection.',
+      'auth/unauthorized-domain': 'This website\u2019s domain is not authorized in Firebase. Add it under Authentication \u2192 Settings \u2192 Authorized domains.',
+      'auth/operation-not-allowed': 'Email/Password sign-in is not enabled. Turn it on in Firebase Console \u2192 Authentication \u2192 Sign-in method.',
+      'auth/configuration-not-found': 'Authentication is not set up for this project yet \u2014 open Firebase Console \u2192 Authentication and click Get Started.'
+    };
+    err.textContent = (msgs[e.code] || (e.message || 'Could not sign in.')) + ' [' + (e.code || 'unknown') + ']';
   }).finally(function(){ btn.disabled = false; btn.textContent = 'Sign In'; });
 };
 $('login-password').addEventListener('keydown', function(e){ if(e.key === 'Enter') $('login-btn').click(); });
