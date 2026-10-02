@@ -316,6 +316,7 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 var auth = firebase.auth();
 var db = firebase.firestore();
+db.settings({ experimentalAutoDetectLongPolling: true, merge: true }); // more resilient to ad blockers/strict networks
 </script>
 <script>
 /* ============ HELPERS ============ */
@@ -513,7 +514,7 @@ $('e-save').onclick = function(){
     ? db.collection('products').doc(editing.id).update(rec)
     : db.collection('products').add(Object.assign({}, rec, { order: products.length }));
   p.then(function(){ toast(editing ? 'Saved' : 'Product added'); closeSheets(); })
-   .catch(function(){ err.textContent = 'Could not save \u2014 check your connection.'; })
+   .catch(function(e){ err.textContent = 'Could not save \u2014 ' + (e && e.message ? e.message : 'check your connection.'); })
    .finally(function(){ btn.disabled = false; btn.textContent = 'Save'; });
 };
 
@@ -563,7 +564,7 @@ $('import-file').onchange = function(){
       status.style.color = 'var(--green)';
       toast('Import complete');
     }).catch(function(err){
-      status.textContent = 'Import failed \u2014 check your connection and try again.';
+      status.textContent = 'Import failed \u2014 ' + (err && err.message ? err.message : 'check your connection and try again.');
       status.style.color = 'var(--red)';
     });
   };
@@ -693,7 +694,7 @@ function updateOrder(id, data, okMsg){
   data.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
   db.collection('orders').doc(id).update(data).then(function(){
     toast(okMsg || 'Updated'); closeSheets();
-  }).catch(function(){ err.textContent = 'Could not update \u2014 check your connection.'; });
+  }).catch(function(e){ err.textContent = 'Could not update \u2014 ' + (e && e.message ? e.message : 'check your connection.'); });
 }
 
 function renderOrderActions(o){
