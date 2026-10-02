@@ -365,7 +365,7 @@
   };
   firebase.initializeApp(firebaseConfig);
   var db = firebase.firestore();
-  db.settings({ experimentalAutoDetectLongPolling: true, merge: true }); // more resilient to ad blockers/strict networks
+  db.settings({ experimentalForceLongPolling: true, useFetchStreams: false, merge: true }); // avoids streaming connections that ad blockers/strict networks often block
 </script>
 <script>
 /* ============ DEFAULTS ============
