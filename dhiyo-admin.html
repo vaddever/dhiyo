@@ -15,11 +15,11 @@
   .top{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px;}
   .brand{font-family:Georgia,serif; letter-spacing:.2em; text-transform:uppercase; font-size:12px; color:var(--gold-bright);}
   .brand small{display:block; letter-spacing:.1em; font-family:system-ui,sans-serif; color:var(--dim); font-size:10.5px; text-transform:none; margin-top:2px;}
-  .pub{background:var(--gold); color:var(--black); border:none; border-radius:999px; padding:10px 16px; font-weight:700; font-size:12px; letter-spacing:.04em; cursor:pointer; position:relative;}
-  .pub.dirty::after{content:''; position:absolute; top:-2px; right:-2px; width:10px; height:10px; border-radius:50%; background:var(--red); border:2px solid var(--black);}
+  .signout{background:none; border:1px solid var(--line); border-radius:999px; padding:8px 14px; font-size:11.5px; color:var(--ivory-dim); color:var(--dim); cursor:pointer;}
   .tabs{display:flex; gap:4px;}
-  .tab{flex:1; background:none; border:none; border-bottom:2px solid transparent; padding:10px 4px; color:var(--dim); cursor:pointer; font-size:13px;}
+  .tab{flex:1; background:none; border:none; border-bottom:2px solid transparent; padding:10px 4px; color:var(--dim); cursor:pointer; font-size:13px; position:relative;}
   .tab.on{color:var(--gold-bright); border-color:var(--gold);}
+  .tab .dot{position:absolute; top:6px; right:calc(50% - 26px); width:7px; height:7px; border-radius:50%; background:var(--red);}
   main{max-width:820px; margin:0 auto; padding:16px;}
   .page{display:none;} .page.on{display:block;}
 
@@ -31,12 +31,13 @@
   .stat span{font-size:10.5px; color:var(--dim); letter-spacing:.04em;}
   .bar{display:flex; gap:8px; margin-bottom:12px;}
   .bar input{flex:1; min-width:0;}
-  input[type=text],input[type=number],input[type=tel],select,textarea{width:100%; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:11px 12px; outline:none; font-size:16px;}
+  input[type=text],input[type=number],input[type=tel],input[type=email],input[type=password],select,textarea{width:100%; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:11px 12px; outline:none; font-size:16px;}
   input:focus,select:focus,textarea:focus{border-color:var(--gold);}
   .btn{background:var(--gold); color:var(--black); border:none; border-radius:10px; padding:11px 16px; font-weight:700; cursor:pointer; white-space:nowrap;}
   .btn.ghost{background:none; color:var(--ivory); border:1px solid var(--line); font-weight:500;}
   .btn.danger{background:none; color:var(--red); border:1px solid rgba(217,119,107,.4); font-weight:500;}
   .btn.block{width:100%;}
+  .btn:disabled{opacity:.45; cursor:not-allowed;}
 
   .plist{display:flex; flex-direction:column; gap:10px;}
   .p{display:flex; gap:12px; background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:10px;}
@@ -72,8 +73,32 @@
   .tg input:checked + i{background:var(--gold); border-color:var(--gold);}
   .tg input:checked + i::after{transform:translateX(20px); background:var(--black);}
 
-  ol.steps{padding-left:20px; display:flex; flex-direction:column; gap:8px; color:var(--dim);} ol.steps b{color:var(--ivory); font-weight:600;}
   .size{font-size:12px; color:var(--dim); margin-top:8px;} .size.warn{color:var(--red);}
+
+  /* login */
+  .login-wrap{min-height:100svh; display:flex; align-items:center; justify-content:center; padding:24px;}
+  .login-wrap[hidden]{display:none;}
+  .login-card{width:100%; max-width:340px; background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:28px 24px;}
+  .login-card h1{font-family:Georgia,serif; font-weight:400; font-size:20px; text-align:center; color:var(--gold-bright); margin-bottom:4px;}
+  .login-card p{text-align:center; font-size:12px; color:var(--dim); margin-bottom:20px;}
+  .login-card input{margin-bottom:10px;}
+  .login-err{color:var(--red); font-size:12.5px; margin-top:8px; min-height:16px; text-align:center;}
+
+  /* orders */
+  .o-list{display:flex; flex-direction:column; gap:10px;}
+  .o{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:14px; cursor:pointer;}
+  .o-top{display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;}
+  .o-id{font-size:11px; color:var(--dim); font-family:monospace;}
+  .o-badge{font-size:10px; letter-spacing:.05em; text-transform:uppercase; padding:4px 10px; border-radius:999px; border:1px solid var(--line); color:var(--gold-bright);}
+  .o-badge.pending{color:var(--dim);}
+  .o-badge.cancelled{color:var(--red); border-color:rgba(217,119,107,.4);}
+  .o-badge.delivered{color:var(--green); border-color:rgba(143,191,138,.4);}
+  .o-cust{font-weight:600; margin-bottom:2px;}
+  .o-meta{font-size:12px; color:var(--dim); display:flex; justify-content:space-between;}
+  .o-filter{display:flex; gap:6px; overflow-x:auto; margin-bottom:12px; padding-bottom:2px; scrollbar-width:none;}
+  .o-filter::-webkit-scrollbar{display:none;}
+  .o-filter button{flex:0 0 auto; background:none; border:1px solid var(--line); border-radius:999px; padding:7px 13px; font-size:11.5px; color:var(--dim); cursor:pointer;}
+  .o-filter button.on{background:var(--gold); border-color:var(--gold); color:var(--black); font-weight:700;}
 
   /* sheet */
   .ov{position:fixed; inset:0; background:rgba(0,0,0,.65); z-index:60; opacity:0; pointer-events:none; transition:.2s;} .ov.on{opacity:1; pointer-events:auto;}
@@ -89,26 +114,71 @@
   .err{color:var(--red); font-size:12.5px; margin-top:10px; min-height:16px;}
   .toast{position:fixed; left:50%; bottom:calc(84px + env(safe-area-inset-bottom,0px)); transform:translate(-50%,16px); background:var(--gold); color:var(--black); font-weight:700; font-size:13px; padding:11px 18px; border-radius:999px; opacity:0; pointer-events:none; transition:.25s; z-index:90; max-width:90vw;}
   .toast.on{opacity:1; transform:translate(-50%,0);}
+
+  /* order detail sheet */
+  .od-section{border-top:1px solid rgba(203,168,106,.12); padding-top:12px; margin-top:12px;}
+  .od-section:first-of-type{border-top:none; padding-top:0; margin-top:0;}
+  .od-title{font-size:11px; letter-spacing:.07em; text-transform:uppercase; color:var(--gold); margin-bottom:8px;}
+  .od-row{display:flex; justify-content:space-between; font-size:13px; padding:3px 0;}
+  .od-total{font-weight:700; color:var(--gold-bright); border-top:1px solid rgba(203,168,106,.15); margin-top:6px; padding-top:8px;}
+  .od-note{font-size:12.5px; color:var(--dim); line-height:1.6; white-space:pre-wrap;}
+  .od-hist{font-size:12px; color:var(--dim); padding:4px 0;}
+  .od-slip{width:140px; height:170px; border-radius:10px; overflow:hidden; background:#1a1710; display:flex; align-items:center; justify-content:center; color:var(--dim); margin-bottom:10px;}
+  .od-slip img{width:100%; height:100%; object-fit:cover;}
+  .od-actions{display:flex; flex-direction:column; gap:8px; margin-top:14px;}
+  textarea{resize:vertical; min-height:70px;}
 </style>
 </head>
 <body>
 
+<div class="login-wrap" id="login-screen">
+  <div class="login-card">
+    <h1>Dhiyo Admin</h1>
+    <p>Sign in to manage your shop</p>
+    <input type="email" id="login-email" placeholder="Email" autocomplete="username">
+    <input type="password" id="login-password" placeholder="Password" autocomplete="current-password">
+    <button class="btn block" id="login-btn">Sign In</button>
+    <div class="login-err" id="login-err"></div>
+  </div>
+</div>
+
+<div id="app" hidden>
 <header>
   <div class="top">
-    <div class="brand">Dhiyo Admin<small id="status">Loading…</small></div>
-    <button class="pub" id="publish-top">Publish</button>
+    <div class="brand">Dhiyo Admin<small id="status">Connecting…</small></div>
+    <button class="signout" id="signout">Sign Out</button>
   </div>
   <div class="tabs" id="tabs">
-    <button class="tab on" data-p="products">Products</button>
+    <button class="tab on" data-p="orders">Orders<span class="dot" id="orders-dot" hidden></span></button>
+    <button class="tab" data-p="products">Products</button>
     <button class="tab" data-p="settings">Site</button>
-    <button class="tab" data-p="publish">Publish</button>
   </div>
 </header>
 
 <main>
+  <!-- ORDERS -->
+  <section class="page on" id="page-orders">
+    <div class="stats" id="o-stats"></div>
+    <div class="o-filter" id="o-filter">
+      <button class="on" data-f="active">Active</button>
+      <button data-f="pending">New</button>
+      <button data-f="payment_submitted">Payment In</button>
+      <button data-f="delivered">Delivered</button>
+      <button data-f="cancelled">Cancelled</button>
+      <button data-f="all">All</button>
+    </div>
+    <div class="o-list" id="o-list"></div>
+  </section>
+
   <!-- PRODUCTS -->
-  <section class="page on" id="page-products">
-    <div id="notice"></div>
+  <section class="page" id="page-products">
+    <div class="card" id="import-card" hidden>
+      <h3>Import Existing Products</h3>
+      <p class="hint" style="margin-top:0;">If you have a products.json from the old version of the shop, bring everything in here — products and site settings together. Safe to use even if you're not sure: it won't duplicate anything you import twice.</p>
+      <button class="btn ghost block" id="import-btn" style="margin-top:10px;">Choose products.json</button>
+      <input type="file" id="import-file" accept="application/json,.json" hidden>
+      <div class="hint" id="import-status"></div>
+    </div>
     <div class="stats" id="stats"></div>
     <div class="bar">
       <input type="text" id="search" placeholder="Search products…">
@@ -131,6 +201,9 @@
       <div class="hint">Digits only, no + or spaces. Orders are sent to this number.</div>
       <label for="s-cur">Currency label</label>
       <input type="text" id="s-cur" placeholder="MVR">
+      <label for="s-pay">Default payment instructions</label>
+      <textarea id="s-pay" placeholder="e.g. BML Account: Dhiyo Studio - 7730000123456"></textarea>
+      <div class="hint">Shown to customers when you request payment on an order. You can edit it per order too.</div>
     </div>
     <div class="card">
       <h3>Shop text</h3>
@@ -143,33 +216,14 @@
       <div class="hint">Shown in a small bar at the top of the shop. Leave empty to hide.</div>
     </div>
   </section>
-
-  <!-- PUBLISH -->
-  <section class="page" id="page-publish">
-    <div class="card">
-      <h3>Publish your changes</h3>
-      <ol class="steps">
-        <li><b>Download</b> the updated file below.</li>
-        <li>Open your GitHub repository and choose <b>Add file → Upload files</b>.</li>
-        <li>Drop in <b>products.json</b> (same folder as the shop page) and <b>commit</b>.</li>
-        <li>Wait a minute or two, then refresh the shop. Your changes are live.</li>
-      </ol>
-      <button class="btn block" id="download" style="margin-top:16px;">Download products.json</button>
-      <div class="size" id="size"></div>
-    </div>
-    <div class="card">
-      <h3>Backup &amp; restore</h3>
-      <button class="btn ghost block" id="import-btn">Import a products.json file</button>
-      <input type="file" id="import-file" accept="application/json,.json" hidden>
-      <button class="btn ghost block" id="reload-live" style="margin-top:10px;">Discard my edits &amp; reload the live version</button>
-      <div class="hint">Your edits are saved automatically in this browser until you publish. They are not live until you upload the file.</div>
-    </div>
-  </section>
 </main>
 
 <button class="fab" id="add">+ Add product</button>
+</div>
 
 <div class="ov" id="ov"></div>
+
+<!-- product sheet -->
 <div class="sheet" id="sheet" role="dialog" aria-label="Edit product">
   <div class="grab"></div>
   <h2 id="sheet-title">Add product</h2>
@@ -204,85 +258,152 @@
   </div>
 </div>
 
+<!-- order detail sheet -->
+<div class="sheet" id="o-sheet" role="dialog" aria-label="Order detail">
+  <div class="grab"></div>
+  <h2>Order <span id="od-id" style="font-family:monospace; font-size:13px; color:var(--dim);"></span></h2>
+  <span class="o-badge" id="od-badge" style="margin-top:4px; display:inline-block;"></span>
+
+  <div class="od-section">
+    <div class="od-title">Customer</div>
+    <div class="od-row"><span id="od-name"></span><span id="od-phone"></span></div>
+    <div class="od-note" id="od-address"></div>
+  </div>
+
+  <div class="od-section">
+    <div class="od-title">Items</div>
+    <div id="od-items"></div>
+    <div class="od-row od-total"><span>Total</span><span id="od-total"></span></div>
+  </div>
+
+  <div class="od-section" id="od-pay-section" hidden>
+    <div class="od-title">Payment</div>
+    <div class="od-slip" id="od-slip">No slip yet</div>
+    <div class="od-note" id="od-pay-detail"></div>
+  </div>
+
+  <div class="od-section">
+    <div class="od-title">History</div>
+    <div id="od-hist"></div>
+  </div>
+
+  <div class="od-section" id="od-request-form" hidden>
+    <div class="od-title">Request Payment</div>
+    <label for="rq-amount">Amount due</label>
+    <input type="number" id="rq-amount" inputmode="decimal" min="0" step="any">
+    <label for="rq-info">Instructions</label>
+    <textarea id="rq-info"></textarea>
+  </div>
+
+  <div class="od-actions" id="od-actions"></div>
+  <div class="err" id="od-err"></div>
+</div>
+
 <div class="toast" id="toast"></div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
-/* ============ DEFAULT DATA (used only if there is no products.json and no saved draft) ============ */
-var DEFAULT_DATA = {"version": 1, "updated": "", "settings": {"storeName": "Dhiyo Studio", "whatsapp": "9607749424", "currency": "MVR", "heroEyebrow": "New look. New chapter. Same heart.", "heroTitle": "Timeless Abayas & More", "heroSub": "Curated favourites · Beauty & lifestyle", "announcement": "", "ordersOpen": true}, "products": [{"id": "p1", "name": "Noor Abaya — Jet Black", "price": 850, "oldPrice": 0, "isNew": true, "best": true, "soldOut": false, "hidden": false, "img": ""}, {"id": "p2", "name": "Zaha Embroidered Abaya", "price": 1150, "oldPrice": 0, "isNew": true, "best": false, "soldOut": false, "hidden": false, "img": ""}, {"id": "p3", "name": "Layla Everyday Abaya", "price": 690, "oldPrice": 850, "isNew": false, "best": false, "soldOut": false, "hidden": false, "img": ""}, {"id": "p4", "name": "Amaya Silk Scarf", "price": 280, "oldPrice": 0, "isNew": true, "best": true, "soldOut": false, "hidden": false, "img": ""}, {"id": "p5", "name": "Rania Pearl Hijab Pin Set", "price": 150, "oldPrice": 220, "isNew": false, "best": false, "soldOut": false, "hidden": false, "img": ""}, {"id": "p6", "name": "Sana Everyday Tote", "price": 420, "oldPrice": 0, "isNew": false, "best": true, "soldOut": false, "hidden": false, "img": ""}, {"id": "p7", "name": "Deena Modest Set", "price": 980, "oldPrice": 1200, "isNew": false, "best": true, "soldOut": false, "hidden": false, "img": ""}, {"id": "p8", "name": "Aaliya Rose Perfume Oil", "price": 190, "oldPrice": 0, "isNew": true, "best": false, "soldOut": false, "hidden": false, "img": ""}]};
-
-var DRAFT_KEY = 'dhiyo_admin_draft_v1';
+var firebaseConfig = {
+  apiKey: "AIzaSyCuut86WlOP7FM3nrJ6sjfA4bbVfTEPtPo",
+  authDomain: "dhiyo-studio.firebaseapp.com",
+  projectId: "dhiyo-studio",
+  storageBucket: "dhiyo-studio.firebasestorage.app",
+  messagingSenderId: "237396611148",
+  appId: "1:237396611148:web:514a9810fe1f3dafbae4e9"
+};
+firebase.initializeApp(firebaseConfig);
+var auth = firebase.auth();
+var db = firebase.firestore();
+</script>
+<script>
+/* ============ HELPERS ============ */
 var $ = function(id){ return document.getElementById(id); };
 function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
-function uid(){ return 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5); }
-function clone(o){ return JSON.parse(JSON.stringify(o)); }
-
-var data = clone(DEFAULT_DATA);
-var published = '';   // canonical string of the last known live/published state
-var notice = '';
-
-/* ---------- normalize ---------- */
-function norm(d){
-  d = d || {};
-  var s = Object.assign({}, DEFAULT_DATA.settings, d.settings || {});
-  s.ordersOpen = s.ordersOpen !== false;
-  var ps = (Array.isArray(d.products) ? d.products : []).filter(function(p){ return p && p.name; }).map(function(p){
-    return { id:String(p.id || uid()), name:String(p.name), price:+p.price || 0, oldPrice:+p.oldPrice || 0,
-             isNew:!!p.isNew, best:!!p.best, soldOut:!!p.soldOut, hidden:!!p.hidden, img:p.img || '' };
-  });
-  return { version:1, updated:d.updated || '', settings:s, products:ps };
+function fmt(n){ return (Math.round((+n||0) * 100) / 100).toString(); }
+function toast(m){ var t = $('toast'); t.textContent = m; t.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(function(){ t.classList.remove('on'); }, 2600); }
+function fmtDate(d){
+  try {
+    var dt = d && d.seconds ? new Date(d.seconds * 1000) : (d ? new Date(d) : null);
+    if(!dt || isNaN(dt.getTime())) return '';
+    return dt.toLocaleDateString(undefined,{month:'short',day:'numeric'}) + ' ' + dt.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});
+  } catch(e){ return ''; }
 }
-function canon(d){ var n = norm(clone(d)); n.updated = ''; return JSON.stringify(n); }
-function isDirty(){ return canon(data) !== published; }
-function saveDraft(){ try { localStorage.setItem(DRAFT_KEY, JSON.stringify(data)); } catch(e){ toast('Browser storage is full — publish soon.'); } refreshChrome(); }
-
-function toast(m){ var t = $('toast'); t.textContent = m; t.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(function(){ t.classList.remove('on'); }, 2400); }
-
-/* ---------- init: draft → live products.json → defaults ---------- */
-function init(){
-  var draft = null;
-  try { draft = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null'); } catch(e){}
-  fetch('products.json?v=' + Date.now(), { cache:'no-store' })
-    .then(function(r){ if(!r.ok) throw 0; return r.json(); })
-    .then(function(live){ published = canon(live); return live; })
-    .catch(function(){ return null; })
-    .then(function(live){
-      if(draft && draft.products){
-        data = norm(draft);
-        if(live && isDirty()) notice = 'draft';
-      } else if(live){ data = norm(live); }
-      else { data = norm(DEFAULT_DATA); published = canon(data); notice = 'nofile'; }
-      renderAll(); fillSettings();
-    });
+function compressImage(file, maxDim, cb){
+  var r = new FileReader();
+  r.onload = function(){
+    var im = new Image();
+    im.onload = function(){
+      var k = Math.min(1, maxDim / Math.max(im.width, im.height));
+      var c = document.createElement('canvas'); c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
+      var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); x.drawImage(im, 0, 0, c.width, c.height);
+      cb(c.toDataURL('image/jpeg', 0.8));
+    };
+    im.onerror = function(){ cb(null); };
+    im.src = r.result;
+  };
+  r.onerror = function(){ cb(null); };
+  r.readAsDataURL(file);
 }
 
-/* ---------- header / status ---------- */
-function refreshChrome(){
-  var d = isDirty();
-  $('publish-top').classList.toggle('dirty', d);
-  $('status').textContent = d ? 'Unpublished changes' : 'Up to date';
-  $('status').style.color = d ? 'var(--red)' : 'var(--green)';
-  var bytes = new Blob([JSON.stringify(out())]).size;
-  $('size').textContent = 'File size: ' + (bytes / 1024 < 1024 ? Math.round(bytes / 1024) + ' KB' : (bytes / 1048576).toFixed(1) + ' MB') + (bytes > 4e6 ? ' — large. Use image links for some photos to keep the shop fast.' : '');
-  $('size').className = 'size' + (bytes > 4e6 ? ' warn' : '');
-}
-function out(){ var d = clone(data); d.updated = new Date().toISOString(); return d; }
+/* ============ AUTH ============ */
+auth.onAuthStateChanged(function(user){
+  if(user){
+    $('login-screen').hidden = true; $('app').hidden = false;
+    boot();
+  } else {
+    $('login-screen').hidden = false; $('app').hidden = true;
+  }
+});
+$('login-btn').onclick = function(){
+  var email = $('login-email').value.trim(), pass = $('login-password').value;
+  var err = $('login-err'); err.textContent = '';
+  if(!email || !pass){ err.textContent = 'Enter your email and password.'; return; }
+  this.disabled = true; this.textContent = 'Signing in\u2026';
+  var btn = this;
+  auth.signInWithEmailAndPassword(email, pass).catch(function(e){
+    err.textContent = 'Could not sign in \u2014 check your email and password.';
+  }).finally(function(){ btn.disabled = false; btn.textContent = 'Sign In'; });
+};
+$('login-password').addEventListener('keydown', function(e){ if(e.key === 'Enter') $('login-btn').click(); });
+$('signout').onclick = function(){ auth.signOut(); };
 
-/* ---------- product list ---------- */
+/* ============ BOOTSTRAP (runs once per sign-in) ============ */
+var booted = false;
+function boot(){
+  if(booted) return; booted = true;
+  initProducts();
+  initSettings();
+  initOrders();
+}
+
+/* ============ TABS ============ */
+function go(p){
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('on', t.dataset.p === p); });
+  document.querySelectorAll('.page').forEach(function(s){ s.classList.toggle('on', s.id === 'page-' + p); });
+  $('add').style.display = p === 'products' ? '' : 'none';
+  window.scrollTo(0, 0);
+}
+$('tabs').onclick = function(e){ var t = e.target.closest('.tab'); if(t) go(t.dataset.p); };
+go('orders');
+
+/* ============ PRODUCTS ============ */
+var products = [];
 function isSale(p){ return p.oldPrice > p.price; }
-function fmt(n){ return (Math.round(n * 100) / 100).toString(); }
-function renderAll(){ renderNotice(); renderStats(); renderList(); refreshChrome(); }
-
-function renderNotice(){
-  var n = $('notice');
-  if(notice === 'draft') n.innerHTML = '<div class="banner"><span>Restored your unpublished edits.</span><button id="nb-x">OK</button></div>';
-  else if(notice === 'nofile') n.innerHTML = '<div class="banner"><span>No products.json found next to this page. Starting from sample products — publish to create it.</span><button id="nb-x">OK</button></div>';
-  else n.innerHTML = '';
-  var x = $('nb-x'); if(x) x.onclick = function(){ notice = ''; renderNotice(); };
+function initProducts(){
+  db.collection('products').orderBy('order','asc').onSnapshot(function(snap){
+    products = []; snap.forEach(function(doc){ products.push(Object.assign({ id:doc.id }, doc.data())); });
+    $('status').textContent = 'Connected'; $('status').style.color = 'var(--green)';
+    $('import-card').hidden = products.length > 0;
+    renderStats(); renderList();
+  }, function(err){
+    $('status').textContent = 'Connection error'; $('status').style.color = 'var(--red)';
+  });
 }
 function renderStats(){
-  var ps = data.products;
-  var live = ps.filter(function(p){ return !p.hidden; }).length;
-  $('stats').innerHTML = [['Products', ps.length], ['Live', live], ['On sale', ps.filter(isSale).length], ['Sold out', ps.filter(function(p){ return p.soldOut; }).length]]
+  var live = products.filter(function(p){ return !p.hidden; }).length;
+  $('stats').innerHTML = [['Products', products.length], ['Live', live], ['On sale', products.filter(isSale).length], ['Sold out', products.filter(function(p){ return p.soldOut; }).length]]
     .map(function(s){ return '<div class="stat"><b>' + s[1] + '</b><span>' + s[0] + '</span></div>'; }).join('');
 }
 function matches(p){
@@ -292,79 +413,79 @@ function matches(p){
 }
 function renderList(){
   var filtering = $('search').value.trim() || $('filter').value !== 'all';
-  var list = data.products.filter(matches);
-  if(!data.products.length){ $('plist').innerHTML = '<div class="empty">No products yet.<br>Tap “+ Add product” to create your first one.</div>'; return; }
+  var list = products.filter(matches);
+  if(!products.length){ $('plist').innerHTML = '<div class="empty">No products yet.<br>Tap \u201c+ Add product\u201d to create your first one.</div>'; return; }
   if(!list.length){ $('plist').innerHTML = '<div class="empty">No products match.</div>'; return; }
   $('plist').innerHTML = list.map(function(p){
-    var i = data.products.indexOf(p);
+    var i = products.indexOf(p);
     var chips = (p.hidden ? '<span class="chip r">Hidden</span>' : '') + (p.soldOut ? '<span class="chip r">Sold out</span>' : '') + (isSale(p) ? '<span class="chip g">Sale</span>' : '') +
                 (p.isNew ? '<span class="chip g">New</span>' : '') + (p.best ? '<span class="chip g">Most selling</span>' : '');
     return '<div class="p' + (p.hidden ? ' hid' : '') + '" data-id="' + esc(p.id) + '">' +
-      '<div class="thumb">' + (p.img ? '<img src="' + esc(p.img) + '" alt="">' : '✦') + '</div>' +
+      '<div class="thumb">' + (p.img ? '<img src="' + esc(p.img) + '" alt="">' : '\u2726') + '</div>' +
       '<div class="pi"><div class="pn">' + esc(p.name) + '</div>' +
       '<div class="pp">' + esc(fmt(p.price)) + (isSale(p) ? '<s>' + esc(fmt(p.oldPrice)) + '</s>' : '') + '</div>' +
       '<div class="chips">' + chips + '</div>' +
       '<div class="acts"><button class="ic" data-a="edit">Edit</button>' +
       '<button class="ic" data-a="sold">' + (p.soldOut ? 'Back in stock' : 'Sold out') + '</button>' +
       '<button class="ic" data-a="hide">' + (p.hidden ? 'Show' : 'Hide') + '</button>' +
-      '<button class="ic" data-a="up"' + (filtering || i === 0 ? ' disabled' : '') + ' aria-label="Move up">↑</button>' +
-      '<button class="ic" data-a="down"' + (filtering || i === data.products.length - 1 ? ' disabled' : '') + ' aria-label="Move down">↓</button>' +
+      '<button class="ic" data-a="up"' + (filtering || i === 0 ? ' disabled' : '') + ' aria-label="Move up">\u2191</button>' +
+      '<button class="ic" data-a="down"' + (filtering || i === products.length - 1 ? ' disabled' : '') + ' aria-label="Move down">\u2193</button>' +
       '<button class="ic" data-a="dup">Copy</button>' +
       '<button class="ic" data-a="del" style="color:var(--red)">Delete</button></div></div></div>';
   }).join('');
 }
 $('plist').addEventListener('click', function(e){
   var b = e.target.closest('[data-a]'); if(!b) return;
-  var id = b.closest('.p').dataset.id, i = data.products.findIndex(function(p){ return p.id === id; }), p = data.products[i], a = b.dataset.a;
+  var id = b.closest('.p').dataset.id, i = products.findIndex(function(p){ return p.id === id; }), p = products[i], a = b.dataset.a;
   if(i < 0) return;
   if(a === 'edit') return openSheet(p);
-  if(a === 'sold') p.soldOut = !p.soldOut;
-  if(a === 'hide') p.hidden = !p.hidden;
-  if(a === 'up' && i > 0){ data.products.splice(i - 1, 0, data.products.splice(i, 1)[0]); }
-  if(a === 'down' && i < data.products.length - 1){ data.products.splice(i + 1, 0, data.products.splice(i, 1)[0]); }
-  if(a === 'dup'){ var c = clone(p); c.id = uid(); c.name = p.name + ' (copy)'; data.products.splice(i + 1, 0, c); toast('Duplicated'); }
-  if(a === 'del'){ if(!confirm('Delete “' + p.name + '”?')) return; data.products.splice(i, 1); toast('Deleted'); }
-  saveDraft(); renderAll();
+  if(a === 'sold') db.collection('products').doc(id).update({ soldOut: !p.soldOut });
+  if(a === 'hide') db.collection('products').doc(id).update({ hidden: !p.hidden });
+  if(a === 'up' && i > 0) swapOrder(i, i - 1);
+  if(a === 'down' && i < products.length - 1) swapOrder(i, i + 1);
+  if(a === 'dup'){
+    var c = Object.assign({}, p); delete c.id; c.name = p.name + ' (copy)'; c.order = products.length;
+    db.collection('products').add(c).then(function(){ toast('Duplicated'); });
+  }
+  if(a === 'del'){ if(!confirm('Delete \u201c' + p.name + '\u201d?')) return; db.collection('products').doc(id).delete().then(function(){ toast('Deleted'); }); }
 });
+function swapOrder(i, j){
+  var a = products[i], b = products[j];
+  var batch = db.batch();
+  batch.update(db.collection('products').doc(a.id), { order: b.order });
+  batch.update(db.collection('products').doc(b.id), { order: a.order });
+  batch.commit();
+}
 $('search').oninput = renderList; $('filter').onchange = renderList;
 
 /* ---------- add / edit sheet ---------- */
 var editing = null, editImg = '';
-function setThumb(){ $('e-thumb').innerHTML = editImg ? '<img src="' + esc(editImg) + '" alt="">' : '✦'; }
+function setThumb(){ $('e-thumb').innerHTML = editImg ? '<img src="' + esc(editImg) + '" alt="">' : '\u2726'; }
 function openSheet(p){
-  editing = p || null; editImg = p ? p.img : '';
+  editing = p || null; editImg = p ? (p.img || '') : '';
   $('sheet-title').textContent = p ? 'Edit product' : 'Add product';
   $('e-name').value = p ? p.name : ''; $('e-price').value = p ? p.price : ''; $('e-old').value = p && p.oldPrice ? p.oldPrice : '';
-  $('e-new').checked = p ? p.isNew : true; $('e-best').checked = p ? p.best : false;
-  $('e-sold').checked = p ? p.soldOut : false; $('e-hide').checked = p ? p.hidden : false;
+  $('e-new').checked = p ? !!p.isNew : true; $('e-best').checked = p ? !!p.best : false;
+  $('e-sold').checked = p ? !!p.soldOut : false; $('e-hide').checked = p ? !!p.hidden : false;
   $('e-url').value = editImg && editImg.indexOf('data:') !== 0 ? editImg : '';
   $('e-err').textContent = ''; setThumb();
   $('ov').classList.add('on'); $('sheet').classList.add('on');
   if(!p) setTimeout(function(){ $('e-name').focus(); }, 300);
 }
-function closeSheet(){ $('ov').classList.remove('on'); $('sheet').classList.remove('on'); }
+function closeSheets(){ $('ov').classList.remove('on'); $('sheet').classList.remove('on'); $('o-sheet').classList.remove('on'); }
 $('add').onclick = function(){ openSheet(null); };
-$('e-cancel').onclick = closeSheet; $('ov').onclick = closeSheet;
-document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeSheet(); });
+$('e-cancel').onclick = closeSheets; $('ov').onclick = closeSheets;
+document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeSheets(); });
 
 $('e-pick').onclick = function(){ $('e-file').click(); };
 $('e-clear').onclick = function(){ editImg = ''; $('e-url').value = ''; setThumb(); };
 $('e-url').oninput = function(){ editImg = $('e-url').value.trim(); setThumb(); };
 $('e-file').onchange = function(){
   var f = this.files && this.files[0]; this.value = ''; if(!f) return;
-  var r = new FileReader();
-  r.onload = function(){
-    var im = new Image();
-    im.onload = function(){
-      var max = 800, k = Math.min(1, max / Math.max(im.width, im.height));
-      var c = document.createElement('canvas'); c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
-      var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); x.drawImage(im, 0, 0, c.width, c.height);
-      editImg = c.toDataURL('image/jpeg', 0.8); $('e-url').value = ''; setThumb();
-    };
-    im.onerror = function(){ toast('Could not read that image'); };
-    im.src = r.result;
-  };
-  r.readAsDataURL(f);
+  compressImage(f, 800, function(dataUrl){
+    if(!dataUrl){ toast('Could not read that image'); return; }
+    editImg = dataUrl; $('e-url').value = ''; setThumb();
+  });
 };
 $('e-save').onclick = function(){
   var name = $('e-name').value.trim(), price = parseFloat($('e-price').value), old = parseFloat($('e-old').value) || 0;
@@ -374,63 +495,238 @@ $('e-save').onclick = function(){
   if(old && old <= price){ err.textContent = 'Original price must be higher than the price (or leave it empty).'; return; }
   var rec = { name:name, price:price, oldPrice:old, isNew:$('e-new').checked, best:$('e-best').checked,
               soldOut:$('e-sold').checked, hidden:$('e-hide').checked, img:editImg };
-  if(editing){ Object.assign(editing, rec); toast('Saved'); }
-  else { rec.id = uid(); data.products.unshift(rec); toast('Product added'); }
-  saveDraft(); closeSheet(); renderAll();
+  var btn = $('e-save'); btn.disabled = true; btn.textContent = 'Saving\u2026';
+  var p = editing
+    ? db.collection('products').doc(editing.id).update(rec)
+    : db.collection('products').add(Object.assign({}, rec, { order: products.length }));
+  p.then(function(){ toast(editing ? 'Saved' : 'Product added'); closeSheets(); })
+   .catch(function(){ err.textContent = 'Could not save \u2014 check your connection.'; })
+   .finally(function(){ btn.disabled = false; btn.textContent = 'Save'; });
 };
 
-/* ---------- site settings ---------- */
-var map = { 's-wa':'whatsapp', 's-cur':'currency', 's-name':'storeName', 's-eye':'heroEyebrow', 's-title':'heroTitle', 's-sub':'heroSub', 's-ann':'announcement' };
-function fillSettings(){
-  Object.keys(map).forEach(function(id){ $(id).value = data.settings[map[id]] || ''; });
-  $('s-open').checked = data.settings.ordersOpen !== false;
-}
-Object.keys(map).forEach(function(id){
-  $(id).addEventListener('input', function(){
-    var v = this.value;
-    if(id === 's-wa') v = v.replace(/\D/g, '');
-    data.settings[map[id]] = v; saveDraft();
-  });
-});
-$('s-open').onchange = function(){ data.settings.ordersOpen = this.checked; saveDraft(); };
-
-/* ---------- tabs ---------- */
-function go(p){
-  document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('on', t.dataset.p === p); });
-  document.querySelectorAll('.page').forEach(function(s){ s.classList.toggle('on', s.id === 'page-' + p); });
-  $('add').style.display = p === 'products' ? '' : 'none';
-  window.scrollTo(0, 0); refreshChrome();
-}
-$('tabs').onclick = function(e){ var t = e.target.closest('.tab'); if(t) go(t.dataset.p); };
-$('publish-top').onclick = function(){ go('publish'); };
-
-/* ---------- publish / import / reload ---------- */
-$('download').onclick = function(){
-  var wa = String(data.settings.whatsapp || '').replace(/\D/g, '');
-  if(wa.length < 7){ toast('Add a valid WhatsApp number in the Site tab first'); go('settings'); return; }
-  var blob = new Blob([JSON.stringify(out(), null, 2)], { type:'application/json' });
-  var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'products.json';
-  document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1500);
-  published = canon(data); saveDraft(); toast('Downloaded — now upload it to GitHub');
-};
+/* ============ IMPORT FROM products.json ============ */
 $('import-btn').onclick = function(){ $('import-file').click(); };
 $('import-file').onchange = function(){
   var f = this.files && this.files[0]; this.value = ''; if(!f) return;
+  var status = $('import-status');
+  status.textContent = 'Reading file\u2026'; status.style.color = '';
   var r = new FileReader();
   r.onload = function(){
-    try { var d = JSON.parse(r.result); if(!Array.isArray(d.products)) throw 0; data = norm(d); saveDraft(); fillSettings(); renderAll(); toast('Imported ' + data.products.length + ' products'); }
-    catch(e){ toast('That is not a valid products.json'); }
+    var data;
+    try { data = JSON.parse(r.result); } catch(e){ status.textContent = 'That file is not valid JSON.'; status.style.color = 'var(--red)'; return; }
+    var list = Array.isArray(data.products) ? data.products : (Array.isArray(data) ? data : null);
+    if(!list){ status.textContent = 'Could not find a products list in that file.'; status.style.color = 'var(--red)'; return; }
+
+    status.textContent = 'Importing\u2026';
+    var batch = db.batch();
+    var n = 0;
+    list.forEach(function(p, i){
+      if(!p || !p.name) return;
+      var rec = {
+        name: String(p.name), price: +p.price || 0, oldPrice: +p.oldPrice || 0,
+        isNew: !!p.isNew, best: !!p.best, soldOut: !!p.soldOut, hidden: !!p.hidden,
+        img: p.img || '', order: i
+      };
+      var ref = p.id ? db.collection('products').doc(String(p.id)) : db.collection('products').doc();
+      batch.set(ref, rec, { merge:true });
+      n++;
+    });
+    var settingsPromise = Promise.resolve();
+    if(data.settings && typeof data.settings === 'object'){
+      var s = data.settings;
+      var settingsRec = {};
+      ['storeName','whatsapp','currency','heroEyebrow','heroTitle','heroSub','announcement','paymentInfo'].forEach(function(k){
+        if(s[k] != null) settingsRec[k] = s[k];
+      });
+      if(s.ordersOpen != null) settingsRec.ordersOpen = !!s.ordersOpen;
+      if(Object.keys(settingsRec).length){
+        settingsRec.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+        settingsPromise = db.collection('settings').doc('main').set(settingsRec, { merge:true });
+      }
+    }
+
+    batch.commit().then(function(){ return settingsPromise; }).then(function(){
+      status.textContent = 'Imported ' + n + ' product' + (n === 1 ? '' : 's') + (data.settings ? ' and site settings' : '') + '.';
+      status.style.color = 'var(--green)';
+      toast('Import complete');
+    }).catch(function(err){
+      status.textContent = 'Import failed \u2014 check your connection and try again.';
+      status.style.color = 'var(--red)';
+    });
   };
+  r.onerror = function(){ status.textContent = 'Could not read that file.'; status.style.color = 'var(--red)'; };
   r.readAsText(f);
 };
-$('reload-live').onclick = function(){
-  if(!confirm('Discard all unpublished edits and reload the live version?')) return;
-  try { localStorage.removeItem(DRAFT_KEY); } catch(e){}
-  location.reload();
-};
-window.addEventListener('beforeunload', function(e){ /* drafts are auto-saved, nothing to lose */ });
 
-init();
+/* ============ SITE SETTINGS ============ */
+var settingsMap = { 's-wa':'whatsapp', 's-cur':'currency', 's-pay':'paymentInfo', 's-name':'storeName', 's-eye':'heroEyebrow', 's-title':'heroTitle', 's-sub':'heroSub', 's-ann':'announcement' };
+var settingsLoaded = false;
+function initSettings(){
+  db.collection('settings').doc('main').onSnapshot(function(doc){
+    var s = doc.exists ? doc.data() : {};
+    settingsLoaded = false;
+    Object.keys(settingsMap).forEach(function(id){ $(id).value = s[settingsMap[id]] || ''; });
+    $('s-open').checked = s.ordersOpen !== false;
+    settingsLoaded = true;
+  });
+}
+function saveSettingsField(key, val){
+  if(!settingsLoaded) return;
+  var data = {}; data[key] = val; data.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+  db.collection('settings').doc('main').set(data, { merge:true });
+}
+Object.keys(settingsMap).forEach(function(id){
+  $(id).addEventListener('change', function(){
+    var v = this.value;
+    if(id === 's-wa') v = v.replace(/\D/g, '');
+    saveSettingsField(settingsMap[id], v);
+  });
+});
+$('s-open').onchange = function(){ saveSettingsField('ordersOpen', this.checked); };
+
+/* ============ ORDERS ============ */
+var orders = [], orderFilter = 'active';
+var STATUS_LABEL = {
+  pending:'New', confirmed:'Confirmed', payment_requested:'Payment Requested', payment_submitted:'Payment Submitted',
+  preparing:'Preparing', out_for_delivery:'Out for Delivery', delivered:'Delivered', cancelled:'Cancelled'
+};
+function initOrders(){
+  db.collection('orders').orderBy('createdAt','desc').onSnapshot(function(snap){
+    orders = []; snap.forEach(function(doc){ orders.push(Object.assign({ id:doc.id }, doc.data())); });
+    renderOrderStats(); renderOrderList();
+  }, function(err){ /* likely missing index on first run; ignore, orderBy works once docs exist */ });
+}
+function renderOrderStats(){
+  var newCount = orders.filter(function(o){ return o.status === 'pending'; }).length;
+  var payIn = orders.filter(function(o){ return o.status === 'payment_submitted'; }).length;
+  $('o-stats').innerHTML = [['Total', orders.length], ['New', newCount], ['Payment In', payIn], ['Delivered', orders.filter(function(o){ return o.status === 'delivered'; }).length]]
+    .map(function(s){ return '<div class="stat"><b>' + s[1] + '</b><span>' + s[0] + '</span></div>'; }).join('');
+  $('orders-dot').hidden = !(newCount || payIn);
+}
+function orderMatches(o){
+  if(orderFilter === 'all') return true;
+  if(orderFilter === 'active') return o.status !== 'delivered' && o.status !== 'cancelled';
+  return o.status === orderFilter;
+}
+function renderOrderList(){
+  var list = orders.filter(orderMatches);
+  if(!list.length){ $('o-list').innerHTML = '<div class="empty">No orders here.</div>'; return; }
+  $('o-list').innerHTML = list.map(function(o){
+    return '<div class="o" data-id="' + esc(o.id) + '">' +
+      '<div class="o-top"><span class="o-id">' + esc(o.id) + '</span><span class="o-badge ' + esc(o.status) + '">' + esc(STATUS_LABEL[o.status] || o.status) + '</span></div>' +
+      '<div class="o-cust">' + esc((o.customer && o.customer.name) || 'Unknown') + '</div>' +
+      '<div class="o-meta"><span>' + (o.items ? o.items.length : 0) + ' item' + (o.items && o.items.length === 1 ? '' : 's') + ' \u00b7 ' + esc(o.currency || '') + ' ' + fmt(o.total) + '</span><span>' + fmtDate(o.createdAt) + '</span></div>' +
+      '</div>';
+  }).join('');
+}
+$('o-filter').onclick = function(e){
+  var b = e.target.closest('button'); if(!b) return;
+  document.querySelectorAll('#o-filter button').forEach(function(x){ x.classList.remove('on'); });
+  b.classList.add('on'); orderFilter = b.dataset.f; renderOrderList();
+};
+$('o-list').addEventListener('click', function(e){
+  var row = e.target.closest('.o'); if(!row) return;
+  var o = orders.find(function(x){ return x.id === row.dataset.id; });
+  if(o) openOrder(o);
+});
+
+var currentOrder = null;
+function openOrder(o){
+  currentOrder = o;
+  $('od-id').textContent = o.id;
+  $('od-badge').textContent = STATUS_LABEL[o.status] || o.status;
+  $('od-badge').className = 'o-badge ' + o.status;
+  $('od-name').textContent = (o.customer && o.customer.name) || '';
+  $('od-phone').textContent = (o.customer && o.customer.phone) || '';
+  $('od-address').textContent = (o.customer && o.customer.address) || '';
+  $('od-items').innerHTML = (o.items || []).map(function(it){
+    return '<div class="od-row"><span>' + esc(it.name) + ' x' + it.qty + '</span><span>' + esc(o.currency) + ' ' + fmt(it.price * it.qty) + '</span></div>';
+  }).join('');
+  $('od-total').textContent = esc(o.currency) + ' ' + fmt(o.total);
+
+  var hasPay = !!(o.paymentSlip || o.status === 'payment_requested' || o.paymentAmount);
+  $('od-pay-section').hidden = !hasPay;
+  if(hasPay){
+    $('od-slip').innerHTML = o.paymentSlip ? '<img src="' + o.paymentSlip + '" alt="Payment slip">' : 'No slip yet';
+    var lines = [];
+    if(o.paymentAmount) lines.push('Amount requested: ' + o.currency + ' ' + fmt(o.paymentAmount));
+    if(o.paymentInfo) lines.push('Instructions: ' + o.paymentInfo);
+    if(o.paymentMethod) lines.push('Customer paid via: ' + o.paymentMethod);
+    if(o.paymentNote) lines.push('Customer note: ' + o.paymentNote);
+    $('od-pay-detail').textContent = lines.join('\n');
+  }
+
+  $('od-hist').innerHTML = (o.history || []).slice().reverse().map(function(h){
+    return '<div class="od-hist">' + esc(h.label || h.status) + ' \u2014 ' + fmtDate(h.at) + '</div>';
+  }).join('') || '<div class="od-hist">No history yet.</div>';
+
+  var showRequestForm = o.status === 'confirmed';
+  $('od-request-form').hidden = !showRequestForm;
+  if(showRequestForm){
+    $('rq-amount').value = o.paymentAmount || o.total;
+    $('rq-info').value = o.paymentInfo || ($('s-pay').value || '');
+  }
+
+  renderOrderActions(o);
+  $('od-err').textContent = '';
+  $('ov').classList.add('on'); $('o-sheet').classList.add('on');
+}
+
+function appendHistory(status, label){
+  return firebase.firestore.FieldValue.arrayUnion({ status:status, label:label, at:new Date().toISOString() });
+}
+function updateOrder(id, data, okMsg){
+  var err = $('od-err'); err.textContent = '';
+  data.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+  db.collection('orders').doc(id).update(data).then(function(){
+    toast(okMsg || 'Updated'); closeSheets();
+  }).catch(function(){ err.textContent = 'Could not update \u2014 check your connection.'; });
+}
+
+function renderOrderActions(o){
+  var html = '';
+  var actions = [];
+  if(o.status === 'pending'){
+    actions.push(['Confirm Order', 'confirm']);
+  } else if(o.status === 'confirmed'){
+    actions.push(['Send Payment Request', 'request-payment']);
+  } else if(o.status === 'payment_requested'){
+    html += '<p class="od-note">Waiting for the customer to submit their payment slip.</p>';
+  } else if(o.status === 'payment_submitted'){
+    actions.push(['Verify &amp; Start Preparing', 'verify']);
+    actions.push(['Reject \u2014 Ask to Resubmit', 'reject']);
+  } else if(o.status === 'preparing'){
+    actions.push(['Mark Out for Delivery', 'out_for_delivery']);
+  } else if(o.status === 'out_for_delivery'){
+    actions.push(['Mark Delivered', 'delivered']);
+  }
+  if(o.status !== 'delivered' && o.status !== 'cancelled'){
+    actions.push(['Cancel Order', 'cancel']);
+  }
+  $('od-actions').innerHTML = html + actions.map(function(a, i){
+    var danger = a[1] === 'cancel' || a[1] === 'reject';
+    return '<button class="btn' + (danger ? ' danger' : (i === 0 ? '' : ' ghost')) + '" data-act="' + a[1] + '">' + a[0] + '</button>';
+  }).join('');
+}
+$('od-actions').addEventListener('click', function(e){
+  var b = e.target.closest('[data-act]'); if(!b || !currentOrder) return;
+  var id = currentOrder.id, act = b.dataset.act;
+  if(act === 'confirm') updateOrder(id, { status:'confirmed', history: appendHistory('confirmed','Order confirmed') }, 'Order confirmed');
+  else if(act === 'request-payment'){
+    var amt = parseFloat($('rq-amount').value) || currentOrder.total;
+    var info = $('rq-info').value.trim();
+    if(!info){ $('od-err').textContent = 'Please add payment instructions.'; return; }
+    updateOrder(id, { status:'payment_requested', paymentAmount:amt, paymentInfo:info, history: appendHistory('payment_requested','Payment requested') }, 'Payment request sent');
+  }
+  else if(act === 'verify') updateOrder(id, { status:'preparing', history: appendHistory('preparing','Payment verified \u2014 preparing order') }, 'Marked as preparing');
+  else if(act === 'reject') updateOrder(id, { status:'payment_requested', paymentSlip:null, paymentMethod:null, paymentNote:null, history: appendHistory('payment_requested','Payment rejected \u2014 please resubmit') }, 'Asked customer to resubmit');
+  else if(act === 'out_for_delivery') updateOrder(id, { status:'out_for_delivery', history: appendHistory('out_for_delivery','Out for delivery') }, 'Marked out for delivery');
+  else if(act === 'delivered') updateOrder(id, { status:'delivered', history: appendHistory('delivered','Delivered') }, 'Marked delivered');
+  else if(act === 'cancel'){
+    if(!confirm('Cancel this order?')) return;
+    updateOrder(id, { status:'cancelled', history: appendHistory('cancelled','Order cancelled') }, 'Order cancelled');
+  }
+});
 </script>
 </body>
 </html>

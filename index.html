@@ -9,7 +9,7 @@
 <style>
   :root{
     --black:#0b0a08; --gold:#cba86a; --gold-bright:#e9cd94; --ivory:#f1e9d8;
-    --ivory-dim:rgba(241,233,216,0.62); --line:rgba(203,168,106,0.28);
+    --ivory-dim:rgba(241,233,216,0.62); --line:rgba(203,168,106,0.28); --red:#d9776b;
   }
   *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
   html{scroll-behavior:smooth;}
@@ -176,8 +176,10 @@
 
   /* checkout */
   .modal{
-    position:fixed; left:50%; top:50%; z-index:81; width:min(90vw,380px); background:#100e0a; border:1px solid var(--line);
+    position:fixed; left:50%; top:50%; z-index:81; width:min(90vw,380px); max-height:86vh; overflow-y:auto;
+    background:#100e0a; border:1px solid var(--line);
     border-radius:18px; padding:22px; transform:translate(-50%,-50%) scale(.94); opacity:0; pointer-events:none; transition:all .25s ease;
+    -webkit-overflow-scrolling:touch;
   }
   .modal.open{transform:translate(-50%,-50%) scale(1); opacity:1; pointer-events:auto;}
   .modal-head{display:flex; justify-content:space-between; align-items:center; font-size:13px; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:14px;}
@@ -193,6 +195,30 @@
   }
   .toast.show{opacity:1; transform:translate(-50%,0);}
   ::selection{background:var(--gold); color:var(--black);}
+
+  /* ---------- confirm / track ---------- */
+  .confirm-body{ text-align:center; padding-top:4px; }
+  .confirm-tick{ width:52px; height:52px; border-radius:50%; background:var(--gold); color:var(--black); font-size:26px; font-weight:bold; display:flex; align-items:center; justify-content:center; margin:0 auto 14px; }
+  .confirm-text{ font-size:13px; color:var(--ivory-dim); line-height:1.6; margin-bottom:16px; }
+  .track-link-row{ display:flex; gap:8px; margin-bottom:14px; }
+  .track-link-row input{ flex:1; background:rgba(255,255,255,.03); border:1px solid var(--line); border-radius:10px; padding:11px 12px; color:var(--ivory-dim); font-size:11px; font-family:monospace; }
+  .ic-btn{ background:none; border:1px solid var(--line); color:var(--ivory); border-radius:10px; padding:0 14px; font-size:12px; cursor:pointer; }
+  .t-label{ display:block; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--ivory-dim); margin:12px 0 6px; }
+  .t-label:first-of-type{ margin-top:0; }
+  #track-id-input, #t-pay-method, #t-pay-note{ width:100%; background:rgba(255,255,255,.03); border:1px solid var(--line); border-radius:10px; padding:11px 12px; color:var(--ivory); font-family:inherit; font-size:15px; outline:none; margin-bottom:10px; }
+  #t-pay-method{ -webkit-appearance:none; appearance:none; }
+  .t-steps{ display:flex; flex-direction:column; gap:0; margin-bottom:18px; }
+  .t-step{ display:flex; gap:12px; padding:8px 0; opacity:.42; }
+  .t-step.on{ opacity:1; }
+  .t-dot{ width:10px; height:10px; border-radius:50%; background:var(--line); margin-top:4px; flex:0 0 auto; }
+  .t-step.on .t-dot{ background:var(--gold); }
+  .t-step-label{ font-size:13px; }
+  .t-cancelled{ background:rgba(217,119,107,.12); border:1px solid rgba(217,119,107,.4); color:var(--red); font-size:12.5px; padding:10px 12px; border-radius:10px; margin-bottom:14px; }
+  .t-section{ border-top:1px solid var(--line); padding-top:14px; margin-top:14px; }
+  .t-section-title{ font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); margin-bottom:8px; }
+  .t-note{ font-size:12.5px; color:var(--ivory-dim); line-height:1.55; margin-bottom:8px; white-space:pre-wrap; }
+  .t-item-row{ display:flex; justify-content:space-between; font-size:12.5px; color:var(--ivory); padding:4px 0; }
+  .t-total-row{ display:flex; justify-content:space-between; font-size:13.5px; color:var(--gold-bright); font-weight:bold; padding-top:8px; border-top:1px solid rgba(203,168,106,.15); margin-top:6px; }
 </style>
 </head>
 <body>
@@ -201,6 +227,7 @@
   <a class="brandmark" id="brand" href="#top">Dhiyo Studio</a>
   <div class="nav-right">
     <a class="nav-link" href="#shop">Shop</a>
+    <a class="nav-link" href="javascript:void(0)" id="track-open">Track Order</a>
     <button class="nav-cart" id="cart-open" aria-label="Open bag">🛍<span class="count" id="cart-count">0</span></button>
   </div>
 </nav>
@@ -253,7 +280,7 @@
   </div>
 </aside>
 
-<div class="modal" id="modal" role="dialog" aria-label="Delivery details">
+<div class="modal" id="checkout-modal" role="dialog" aria-label="Delivery details">
   <div class="modal-head"><span>Delivery Details</span><button class="x" id="modal-close" aria-label="Close">&times;</button></div>
   <form id="form">
     <div class="modal-sum" id="modal-sum"></div>
@@ -264,8 +291,81 @@
   </form>
 </div>
 
+<div class="modal" id="confirm-modal" role="dialog" aria-label="Order placed">
+  <div class="modal-head"><span>Order Sent</span><button class="x" id="confirm-close" aria-label="Close">&times;</button></div>
+  <div class="confirm-body">
+    <div class="confirm-tick">✓</div>
+    <p class="confirm-text">Your order has been sent on WhatsApp. Keep this link to check your order status anytime.</p>
+    <div class="track-link-row">
+      <input type="text" id="confirm-link" readonly>
+      <button class="ic-btn" id="confirm-copy" type="button">Copy</button>
+    </div>
+    <button class="btn" id="confirm-track-btn" type="button">Track This Order</button>
+  </div>
+</div>
+
+<div class="modal track-modal" id="track-modal" role="dialog" aria-label="Track your order">
+  <div class="modal-head"><span>Track Your Order</span><button class="x" id="track-close" aria-label="Close">&times;</button></div>
+  <div id="track-find">
+    <label class="t-label">Order ID</label>
+    <input type="text" id="track-id-input" placeholder="Paste your order ID">
+    <button class="btn" id="track-find-btn" type="button">Find Order</button>
+    <div class="err" id="track-err"></div>
+  </div>
+  <div id="track-result" hidden>
+    <div class="t-steps" id="t-steps"></div>
+    <div class="t-cancelled" id="t-cancelled" hidden>This order was cancelled.</div>
+    <div class="t-section">
+      <div class="t-section-title">Items</div>
+      <div id="t-items"></div>
+      <div class="t-total-row"><span>Total</span><span id="t-total"></span></div>
+    </div>
+    <div class="t-section" id="t-payment-request" hidden>
+      <div class="t-section-title">Payment Requested</div>
+      <p class="t-note" id="t-pay-amount"></p>
+      <p class="t-note" id="t-pay-info"></p>
+      <label class="t-label">Payment method</label>
+      <select id="t-pay-method">
+        <option value="Bank Transfer">Bank Transfer</option>
+        <option value="Other">Other</option>
+      </select>
+      <label class="t-label">Attach payment slip</label>
+      <div class="photo">
+        <div class="thumb" id="t-slip-thumb">✦</div>
+        <div class="col">
+          <button class="btn ghost" id="t-slip-pick" type="button">Choose photo</button>
+        </div>
+      </div>
+      <input type="file" id="t-slip-file" accept="image/*" hidden>
+      <textarea id="t-pay-note" placeholder="Note (optional)" rows="2"></textarea>
+      <button class="btn" id="t-pay-submit" type="button">Submit Payment</button>
+      <div class="err" id="t-pay-err"></div>
+    </div>
+    <div class="t-section" id="t-payment-view" hidden>
+      <div class="t-section-title">Payment Submitted</div>
+      <div class="thumb" id="t-slip-view" style="width:120px;height:140px;"></div>
+      <p class="t-note" id="t-pay-method-view"></p>
+    </div>
+    <button class="btn ghost" id="track-another" type="button" style="margin-top:14px;">Track a different order</button>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+  var firebaseConfig = {
+    apiKey: "AIzaSyCuut86WlOP7FM3nrJ6sjfA4bbVfTEPtPo",
+    authDomain: "dhiyo-studio.firebaseapp.com",
+    projectId: "dhiyo-studio",
+    storageBucket: "dhiyo-studio.firebasestorage.app",
+    messagingSenderId: "237396611148",
+    appId: "1:237396611148:web:514a9810fe1f3dafbae4e9"
+  };
+  firebase.initializeApp(firebaseConfig);
+  var db = firebase.firestore();
+</script>
 <script>
 /* ============ DEFAULTS ============
    The live shop reads products.json (created by the admin page). These defaults are only used
@@ -360,7 +460,7 @@ $('items').addEventListener('click', function(e){
 });
 
 function openDrawer(){ $('drawer').classList.add('open'); $('overlay').classList.add('open'); }
-function closeAll(){ ['drawer','modal'].forEach(function(i){ $(i).classList.remove('open'); }); $('overlay').classList.remove('open'); }
+function closeAll(){ ['drawer','checkout-modal','confirm-modal','track-modal'].forEach(function(i){ $(i).classList.remove('open'); }); $('overlay').classList.remove('open'); }
 $('cart-open').onclick = openDrawer;
 $('cart-close').onclick = closeAll;
 $('modal-close').onclick = closeAll;
@@ -371,35 +471,87 @@ $('checkout-btn').onclick = function(){
   if(!count() || !S.ordersOpen) return;
   $('drawer').classList.remove('open');
   $('modal-sum').textContent = count() + ' item' + (count() > 1 ? 's' : '') + ' · ' + CURRENCY + ' ' + money(total());
-  $('modal').classList.add('open');
+  $('checkout-modal').classList.add('open');
 };
+$('modal-close') && ($('modal-close').onclick = closeAll);
 
 function toast(msg){ var t = $('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 2600); }
 
+var placing = false;
 $('form').addEventListener('submit', function(e){
   e.preventDefault();
-  var lines = ["Hi " + S.storeName + "! I'd like to order:", ""];
-  Object.keys(cart).forEach(function(id){
+  if(placing || !count()) return;
+  placing = true;
+  var submitBtn = $('form').querySelector('button[type=submit]');
+  submitBtn.disabled = true; submitBtn.textContent = 'Placing order\u2026';
+
+  var items = Object.keys(cart).map(function(id){
     var p = find(id);
-    lines.push("• " + p.name + " x" + cart[id] + " — " + CURRENCY + " " + money(p.price * cart[id]));
+    return { id:id, name:p.name, price:p.price, qty:cart[id] };
   });
-  lines.push("", "Total: " + CURRENCY + " " + money(total()), "",
-    "Name: " + $('f-name').value.trim(),
-    "Phone: " + $('f-phone').value.trim(),
-    "Address: " + $('f-address').value.trim());
-  window.open("https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(lines.join("\n")), '_blank');
-  cart = {}; save(); renderCart(); closeAll(); $('form').reset();
-  toast('Order sent to WhatsApp ✓');
+  var orderTotal = total();
+  var customer = {
+    name: $('f-name').value.trim(),
+    phone: $('f-phone').value.trim(),
+    address: $('f-address').value.trim()
+  };
+  var orderDoc = {
+    items: items,
+    total: orderTotal,
+    currency: CURRENCY,
+    customer: customer,
+    status: 'pending',
+    paymentAmount: null,
+    paymentInfo: '',
+    paymentMethod: null,
+    paymentSlip: null,
+    paymentNote: null,
+    history: [{ status:'pending', label:'Order placed', at: new Date().toISOString() }],
+    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+
+  db.collection('orders').add(orderDoc).then(function(ref){
+    var link = location.origin + location.pathname + '?order=' + ref.id;
+    var lines = ["Hi " + S.storeName + "! I'd like to order:", ""];
+    items.forEach(function(it){ lines.push("\u2022 " + it.name + " x" + it.qty + " \u2014 " + CURRENCY + " " + money(it.price * it.qty)); });
+    lines.push("", "Total: " + CURRENCY + " " + money(orderTotal), "",
+      "Name: " + customer.name, "Phone: " + customer.phone, "Address: " + customer.address,
+      "", "Order ID: " + ref.id, "Track: " + link);
+    window.open("https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(lines.join("\n")), '_blank');
+
+    try { localStorage.setItem('dhiyo_last_order', ref.id); } catch(err){}
+    cart = {}; save(); renderCart(); closeAll(); $('form').reset();
+    $('confirm-link').value = link;
+    $('confirm-track-btn').dataset.id = ref.id;
+    $('confirm-modal').classList.add('open'); $('overlay').classList.add('open');
+  }).catch(function(err){
+    toast('Could not place order \u2014 check your connection and try again');
+  }).finally(function(){
+    placing = false; submitBtn.disabled = false; submitBtn.textContent = 'Send Order on WhatsApp';
+  });
 });
 
-/* ============ LOAD LIVE DATA (products.json) ============ */
+$('confirm-close').onclick = closeAll;
+$('confirm-copy').onclick = function(){
+  $('confirm-link').select(); $('confirm-link').setSelectionRange(0, 9999);
+  try { document.execCommand('copy'); toast('Link copied'); } catch(e){}
+};
+$('confirm-track-btn').onclick = function(){
+  var id = this.dataset.id;
+  closeAll();
+  openTrack(id);
+};
+
+/* ============ LOAD LIVE DATA (Firestore) ============ */
 function normalize(d){
   var s = Object.assign({}, DEFAULTS.settings, (d && d.settings) || {});
   s.ordersOpen = s.ordersOpen !== false;
   var ps = ((d && d.products) || []).filter(function(p){ return p && p.id && p.name && isFinite(p.price); }).map(function(p){
     return { id:String(p.id), name:String(p.name), price:+p.price, oldPrice:+p.oldPrice || 0, isNew:!!p.isNew, best:!!p.best,
-             soldOut:!!p.soldOut, hidden:!!p.hidden, img:p.img || '' };
+             soldOut:!!p.soldOut, hidden:!!p.hidden, img:p.img || '', order:+p.order || 0 };
   });
+  ps.sort(function(a,b){ return a.order - b.order; });
   return { settings:s, products:ps };
 }
 function applySettings(){
@@ -410,24 +562,173 @@ function applySettings(){
   $('hero-eyebrow').textContent = S.heroEyebrow;
   $('hero-title').textContent = S.heroTitle;
   $('hero-sub').textContent = S.heroSub;
-  $('foot-note').textContent = "© " + new Date().getFullYear() + " " + S.storeName;
-  document.title = S.storeName + " — Abayas, Accessories & Lifestyle";
+  $('foot-note').textContent = "\u00a9 " + new Date().getFullYear() + " " + S.storeName;
+  document.title = S.storeName + " \u2014 Abayas, Accessories & Lifestyle";
   $('announce').textContent = S.announcement || '';
   $('announce').hidden = !S.announcement;
 }
-var started = false;
+var started = false, liveSettings = null, livePlain = null;
+function renderLive(){
+  if(!liveSettings && !livePlain) return;
+  var raw = { settings: liveSettings || {}, products: livePlain || [] };
+  DATA = normalize(raw); S = DATA.settings; PRODUCTS = DATA.products;
+  Object.keys(cart).forEach(function(id){ if(!find(id) || find(id).hidden || find(id).soldOut || !(cart[id] > 0)) delete cart[id]; });
+  save(); applySettings(); renderGrid(); renderCart();
+  started = true;
+}
+$('grid').innerHTML = '<div class="empty">Loading\u2026</div>';
+applySettings();
+
+db.collection('settings').doc('main').onSnapshot(function(doc){
+  liveSettings = doc.exists ? doc.data() : {};
+  renderLive();
+}, function(err){ if(!started) start(null); });
+
+db.collection('products').onSnapshot(function(snap){
+  livePlain = [];
+  snap.forEach(function(doc){ livePlain.push(Object.assign({ id: doc.id }, doc.data())); });
+  renderLive();
+}, function(err){ if(!started) start(null); });
+
 function start(d){
   if(started) return; started = true;
   DATA = normalize(d || DEFAULTS); S = DATA.settings; PRODUCTS = DATA.products;
   Object.keys(cart).forEach(function(id){ if(!find(id) || find(id).hidden || find(id).soldOut || !(cart[id] > 0)) delete cart[id]; });
   save(); applySettings(); renderGrid(); renderCart();
 }
-$('grid').innerHTML = '<div class="empty">Loading…</div>';
-applySettings();
-fetch('products.json?v=' + Date.now(), { cache:'no-store' })
-  .then(function(r){ if(!r.ok) throw 0; return r.json(); })
-  .then(start).catch(function(){ start(null); });
-setTimeout(function(){ start(null); }, 3500);
+setTimeout(function(){ if(!started) start(null); }, 4000);
+
+/* ============ ORDER TRACKING ============ */
+var STEPS = [
+  ['pending','Order Received'],
+  ['confirmed','Confirmed'],
+  ['payment_requested','Payment Requested'],
+  ['payment_submitted','Payment Submitted'],
+  ['preparing','Preparing'],
+  ['out_for_delivery','Out for Delivery'],
+  ['delivered','Delivered']
+];
+var currentOrderId = null, currentOrderData = null, slipDataUrl = '';
+
+function compressImage(file, maxDim, cb){
+  var r = new FileReader();
+  r.onload = function(){
+    var im = new Image();
+    im.onload = function(){
+      var k = Math.min(1, maxDim / Math.max(im.width, im.height));
+      var c = document.createElement('canvas'); c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
+      var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); x.drawImage(im, 0, 0, c.width, c.height);
+      cb(c.toDataURL('image/jpeg', 0.75));
+    };
+    im.onerror = function(){ cb(null); };
+    im.src = r.result;
+  };
+  r.onerror = function(){ cb(null); };
+  r.readAsDataURL(file);
+}
+
+function openTrack(prefillId){
+  $('track-find').hidden = false; $('track-result').hidden = true;
+  $('track-err').textContent = ''; $('track-id-input').value = prefillId || '';
+  $('track-modal').classList.add('open'); $('overlay').classList.add('open');
+  if(prefillId) loadOrder(prefillId);
+}
+$('track-open').onclick = function(){
+  var last = ''; try { last = localStorage.getItem('dhiyo_last_order') || ''; } catch(e){}
+  openTrack(last);
+};
+$('track-close').onclick = closeAll;
+$('track-another').onclick = function(){ $('track-find').hidden = false; $('track-result').hidden = true; };
+$('track-find-btn').onclick = function(){
+  var id = $('track-id-input').value.trim();
+  if(!id){ $('track-err').textContent = 'Please enter your order ID.'; return; }
+  loadOrder(id);
+};
+
+function loadOrder(id){
+  $('track-err').textContent = 'Looking up your order\u2026';
+  db.collection('orders').doc(id).get().then(function(doc){
+    if(!doc.exists){ $('track-err').textContent = 'No order found with that ID.'; return; }
+    currentOrderId = id; currentOrderData = doc.data();
+    try { localStorage.setItem('dhiyo_last_order', id); } catch(e){}
+    $('track-err').textContent = '';
+    renderOrder();
+  }).catch(function(){ $('track-err').textContent = 'Could not reach the order lookup. Check your connection.'; });
+}
+
+function renderOrder(){
+  var o = currentOrderData;
+  $('track-find').hidden = true; $('track-result').hidden = false;
+
+  var cancelled = o.status === 'cancelled';
+  $('t-cancelled').hidden = !cancelled;
+  var activeIdx = STEPS.findIndex(function(s){ return s[0] === o.status; });
+  $('t-steps').innerHTML = cancelled ? '' : STEPS.map(function(s, i){
+    return '<div class="t-step' + (i <= activeIdx ? ' on' : '') + '"><div class="t-dot"></div><div class="t-step-label">' + s[1] + '</div></div>';
+  }).join('');
+
+  $('t-items').innerHTML = (o.items || []).map(function(it){
+    return '<div class="t-item-row"><span>' + esc(it.name) + ' x' + it.qty + '</span><span>' + o.currency + ' ' + money(it.price * it.qty) + '</span></div>';
+  }).join('');
+  $('t-total').textContent = o.currency + ' ' + money(o.total);
+
+  var showPayForm = o.status === 'payment_requested';
+  $('t-payment-request').hidden = !showPayForm;
+  if(showPayForm){
+    $('t-pay-amount').textContent = 'Amount due: ' + o.currency + ' ' + money(o.paymentAmount || o.total);
+    $('t-pay-info').textContent = o.paymentInfo || '';
+    slipDataUrl = '';
+    $('t-slip-thumb').innerHTML = '\u2726';
+  }
+
+  var showPayView = o.status !== 'payment_requested' && o.status !== 'pending' && o.status !== 'confirmed' && o.paymentSlip;
+  $('t-payment-view').hidden = !showPayView;
+  if(showPayView){
+    $('t-slip-view').innerHTML = '<img src="' + o.paymentSlip + '" alt="Payment slip" style="width:100%;height:100%;object-fit:cover;border-radius:10px;">';
+    $('t-pay-method-view').textContent = 'Method: ' + (o.paymentMethod || '\u2014') + (o.paymentNote ? '\nNote: ' + o.paymentNote : '');
+  }
+}
+
+$('t-slip-pick').onclick = function(){ $('t-slip-file').click(); };
+$('t-slip-file').onchange = function(){
+  var f = this.files && this.files[0]; this.value = ''; if(!f) return;
+  compressImage(f, 1000, function(dataUrl){
+    if(!dataUrl){ toast('Could not read that image'); return; }
+    slipDataUrl = dataUrl;
+    $('t-slip-thumb').innerHTML = '<img src="' + dataUrl + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:10px;">';
+  });
+};
+$('t-pay-submit').onclick = function(){
+  var err = $('t-pay-err'); err.textContent = '';
+  if(!slipDataUrl){ err.textContent = 'Please attach a photo of your payment slip.'; return; }
+  var btn = this; btn.disabled = true; btn.textContent = 'Submitting\u2026';
+  var method = $('t-pay-method').value;
+  var note = $('t-pay-note').value.trim();
+  var histEntry = { status:'payment_submitted', label:'Payment submitted by customer', at: new Date().toISOString() };
+  db.collection('orders').doc(currentOrderId).update({
+    status: 'payment_submitted',
+    paymentMethod: method,
+    paymentSlip: slipDataUrl,
+    paymentNote: note || null,
+    history: firebase.firestore.FieldValue.arrayUnion(histEntry),
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(function(){
+    currentOrderData.status = 'payment_submitted';
+    currentOrderData.paymentMethod = method; currentOrderData.paymentSlip = slipDataUrl; currentOrderData.paymentNote = note || null;
+    renderOrder();
+    toast('Payment submitted \u2713');
+  }).catch(function(){
+    err.textContent = 'Could not submit \u2014 check your connection and try again.';
+  }).finally(function(){
+    btn.disabled = false; btn.textContent = 'Submit Payment';
+  });
+};
+
+(function(){
+  var qp = new URLSearchParams(location.search);
+  var qid = qp.get('order');
+  if(qid) setTimeout(function(){ openTrack(qid); }, 300);
+})();
 </script>
 </body>
 </html>
