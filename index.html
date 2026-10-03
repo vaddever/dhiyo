@@ -478,6 +478,13 @@ $('modal-close') && ($('modal-close').onclick = closeAll);
 
 function toast(msg){ var t = $('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 2600); }
 
+function fbErr(e, what){
+  var code = (e && e.code) || '';
+  var why = code === 'permission-denied' ? 'The shop is not allowed to do this yet (Firestore rules need updating by the shop owner).'
+          : code === 'unavailable' || /offline/i.test((e && e.message) || '') ? 'Could not reach the server. If you use an ad blocker or VPN, turn it off for this page and try again.'
+          : 'Something went wrong.';
+  return what + ' ' + why + ' [' + (code || 'error') + ']';
+}
 var placing = false;
 $('form').addEventListener('submit', function(e){
   e.preventDefault();
@@ -527,7 +534,7 @@ $('form').addEventListener('submit', function(e){
     $('confirm-track-btn').dataset.id = ref.id;
     $('confirm-modal').classList.add('open'); $('overlay').classList.add('open');
   }).catch(function(err){
-    toast('Could not place order \u2014 check your connection and try again');
+    toast(fbErr(err, 'Could not place order.'));
   }).finally(function(){
     placing = false; submitBtn.disabled = false; submitBtn.textContent = 'Send Order on WhatsApp';
   });
@@ -654,7 +661,7 @@ function loadOrder(id){
     try { localStorage.setItem('dhiyo_last_order', id); } catch(e){}
     $('track-err').textContent = '';
     renderOrder();
-  }).catch(function(){ $('track-err').textContent = 'Could not reach the order lookup. Check your connection.'; });
+  }).catch(function(e){ $('track-err').textContent = fbErr(e, 'Could not look up your order.'); });
 }
 
 function renderOrder(){
@@ -718,8 +725,8 @@ $('t-pay-submit').onclick = function(){
     currentOrderData.paymentMethod = method; currentOrderData.paymentSlip = slipDataUrl; currentOrderData.paymentNote = note || null;
     renderOrder();
     toast('Payment submitted \u2713');
-  }).catch(function(){
-    err.textContent = 'Could not submit \u2014 check your connection and try again.';
+  }).catch(function(e){
+    err.textContent = fbErr(e, 'Could not submit.');
   }).finally(function(){
     btn.disabled = false; btn.textContent = 'Submit Payment';
   });
