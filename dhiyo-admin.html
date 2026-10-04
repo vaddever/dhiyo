@@ -215,6 +215,12 @@
       <input type="text" id="s-ann" placeholder="e.g. Free delivery in Malé this week">
       <div class="hint">Shown in a small bar at the top of the shop. Leave empty to hide.</div>
     </div>
+    <div class="card">
+      <h3>Customer messages</h3>
+      <label for="s-shop">Shop website link</label>
+      <input type="text" id="s-shop" placeholder="https://vaddever.github.io/">
+      <div class="hint">Used in WhatsApp updates so customers can open their order status. Leave empty to use this admin page's folder.</div>
+    </div>
   </section>
 </main>
 
@@ -573,7 +579,7 @@ $('import-file').onchange = function(){
 };
 
 /* ============ SITE SETTINGS ============ */
-var settingsMap = { 's-wa':'whatsapp', 's-cur':'currency', 's-pay':'paymentInfo', 's-name':'storeName', 's-eye':'heroEyebrow', 's-title':'heroTitle', 's-sub':'heroSub', 's-ann':'announcement' };
+var settingsMap = { 's-wa':'whatsapp', 's-cur':'currency', 's-pay':'paymentInfo', 's-name':'storeName', 's-eye':'heroEyebrow', 's-title':'heroTitle', 's-sub':'heroSub', 's-ann':'announcement', 's-shop':'shopUrl' };
 var settingsLoaded = false;
 function initSettings(){
   db.collection('settings').doc('main').onSnapshot(function(doc){
@@ -581,6 +587,7 @@ function initSettings(){
     settingsLoaded = false;
     Object.keys(settingsMap).forEach(function(id){ $(id).value = s[settingsMap[id]] || ''; });
     $('s-open').checked = s.ordersOpen !== false;
+    shopUrlSetting = s.shopUrl || '';
     settingsLoaded = true;
   });
 }
@@ -608,8 +615,13 @@ function initOrders(){
   db.collection('orders').orderBy('createdAt','desc').onSnapshot(function(snap){
     orders = []; snap.forEach(function(doc){ orders.push(Object.assign({ id:doc.id }, doc.data())); });
     renderOrderStats(); renderOrderList();
+    if(currentOrder && $('o-sheet').classList.contains('on')){
+      var fresh = orders.find(function(x){ return x.id === currentOrder.id; });
+      if(fresh && orderSig(fresh) !== orderSig(currentOrder)) openOrder(fresh);
+    }
   }, function(err){ /* likely missing index on first run; ignore, orderBy works once docs exist */ });
 }
+function orderSig(o){ return [o.status, (o.history || []).length, o.paymentSlip ? 1 : 0].join('|'); }
 function renderOrderStats(){
   var newCount = orders.filter(function(o){ return o.status === 'pending'; }).length;
   var payIn = orders.filter(function(o){ return o.status === 'payment_submitted'; }).length;
@@ -693,7 +705,7 @@ function updateOrder(id, data, okMsg){
   var err = $('od-err'); err.textContent = '';
   data.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
   db.collection('orders').doc(id).update(data).then(function(){
-    toast(okMsg || 'Updated'); closeSheets();
+    toast(okMsg || 'Updated');
   }).catch(function(e){ err.textContent = 'Could not update \u2014 ' + (e && e.message ? e.message : 'check your connection.'); });
 }
 
@@ -717,14 +729,52 @@ function renderOrderActions(o){
   if(o.status !== 'delivered' && o.status !== 'cancelled'){
     actions.push(['Cancel Order', 'cancel']);
   }
+  var hasPhone = !!waPhone(o);
+  var notify = hasPhone ? '<button class="btn ghost" data-act="notify" style="border-color:rgba(143,191,138,.5); color:var(--green);">Message customer on WhatsApp</button>' : '<p class="od-note">No valid phone number on this order, so WhatsApp messaging is unavailable.</p>';
   $('od-actions').innerHTML = html + actions.map(function(a, i){
     var danger = a[1] === 'cancel' || a[1] === 'reject';
     return '<button class="btn' + (danger ? ' danger' : (i === 0 ? '' : ' ghost')) + '" data-act="' + a[1] + '">' + a[0] + '</button>';
-  }).join('');
+  }).join('') + notify + '<button class="btn ghost" data-act="close">Close</button>';
+}
+
+/* ---------- WhatsApp message to customer ---------- */
+var shopUrlSetting = '';
+function waPhone(o){
+  var d = String((o.customer && o.customer.phone) || '').replace(/\D/g, '');
+  if(d.indexOf('00') === 0) d = d.slice(2);
+  if(d.length === 7) d = '960' + d;
+  return d.length >= 9 ? d : '';
+}
+function trackLink(o){
+  var base = (shopUrlSetting || '').trim() || (location.origin + location.pathname.replace(/[^\/]*$/, ''));
+  if(base.indexOf('http') !== 0) base = 'https://' + base;
+  return base + (base.indexOf('?') === -1 ? '?' : '&') + 'order=' + o.id;
+}
+function waMessage(o){
+  var store = ($('s-name').value || 'Dhiyo Studio'), name = (o.customer && o.customer.name) || 'there', cur = o.currency || '';
+  var link = trackLink(o), hi = 'Hi ' + name + '! ';
+  var tail = '\n\nTrack your order: ' + link;
+  var m = {
+    pending: hi + 'We have received your order at ' + store + '. We will confirm it shortly.' + tail,
+    confirmed: hi + 'Your order at ' + store + ' is confirmed \u2705. We will send payment details next.' + tail,
+    payment_requested: hi + 'Please pay ' + cur + ' ' + fmt(o.paymentAmount || o.total) + ' for your order.\n\n' + (o.paymentInfo || '') + '\n\nAfter paying, open the link below and attach your payment slip:\n' + link,
+    payment_submitted: hi + 'We have received your payment slip and are checking it now.' + tail,
+    preparing: hi + 'Payment received, thank you! We are now preparing your order.' + tail,
+    out_for_delivery: hi + 'Your order is out for delivery \ud83d\ude9a.' + tail,
+    delivered: hi + 'Your order has been delivered. Thank you for shopping with ' + store + '!' + tail,
+    cancelled: hi + 'Your order has been cancelled. Please message us if you have any questions.' + tail
+  };
+  return m[o.status] || (hi + 'Update on your order.' + tail);
 }
 $('od-actions').addEventListener('click', function(e){
   var b = e.target.closest('[data-act]'); if(!b || !currentOrder) return;
   var id = currentOrder.id, act = b.dataset.act;
+  if(act === 'close'){ closeSheets(); return; }
+  if(act === 'notify'){
+    var ph = waPhone(currentOrder);
+    if(ph) window.open('https://wa.me/' + ph + '?text=' + encodeURIComponent(waMessage(currentOrder)), '_blank');
+    return;
+  }
   if(act === 'confirm') updateOrder(id, { status:'confirmed', history: appendHistory('confirmed','Order confirmed') }, 'Order confirmed');
   else if(act === 'request-payment'){
     var amt = parseFloat($('rq-amount').value) || currentOrder.total;
